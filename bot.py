@@ -127,4 +127,19 @@ async def birthday_loop():
 async def before_birthday_loop():
     await bot.wait_until_ready()
 
+import threading
+from aiohttp import web
+
+async def health(request):
+    return web.Response(text="ok")
+
+def run_web():
+    app = web.Application()
+    app.router.add_get("/", health)
+    port = int(os.getenv("PORT", "10000"))
+    web.run_app(app, host="0.0.0.0", port=port)
+
+threading.Thread(target=run_web, daemon=True).start()
+
 bot.run(DISCORD_TOKEN)
+
